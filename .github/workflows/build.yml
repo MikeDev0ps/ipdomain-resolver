@@ -38,25 +38,13 @@ jobs:
 
         dpkg-deb --build ipdomain-resolver
 
-    - name: Publish to GitHub Packages
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        curl -X PUT -H "Authorization: token $GITHUB_TOKEN" \
-        -H "Content-Type: application/octet-stream" \
-        --data-binary @ipdomain-resolver.deb \
-        "https://uploads.github.com/packages/MikeDev0ps/ipdomain-resolver/ipdomain-resolver_1.0_all.deb"
-
-    - name: Create Release
-      id: create_release
+    - name: Upload files to Release
       uses: softprops/action-gh-release@v1
       with:
         tag_name: v1.0
-        name: Release v1.0
+        release_name: Release v1.0
         files: |
           ipdomain-resolver.deb
           ipdomain-resolver.sh
-        draft: false
-        prerelease: false
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Используем стандартный токен
