@@ -7,62 +7,44 @@ on:
   pull_request:
     branches:
       - main
-  release:
-    types: [created]  # Запускаем при создании релиза
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
-      - name: Set up environment
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y build-essential dh-make devscripts
+    - name: Set up environment
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential dh-make devscripts
 
-      - name: Create DEB package
-        run: |
-          mkdir -p ipdomain-resolver/usr/local/bin
-          cp ipdomain-resolver.sh ipdomain-resolver/usr/local/bin/ipdomain-resolver
-          chmod +x ipdomain-resolver/usr/local/bin/ipdomain-resolver
+    - name: Create DEB package
+      run: |
+        mkdir -p ipdomain-resolver/usr/local/bin
+        cp ipdomain-resolver.sh ipdomain-resolver/usr/local/bin/ipdomain-resolver
+        chmod +x ipdomain-resolver/usr/local/bin/ipdomain-resolver
 
-          mkdir -p ipdomain-resolver/DEBIAN
-          echo "Package: ipdomain-resolver" > ipdomain-resolver/DEBIAN/control
-          echo "Version: 1.0" >> ipdomain-resolver/DEBIAN/control
-          echo "Section: utils" >> ipdomain-resolver/DEBIAN/control
-          echo "Priority: optional" >> ipdomain-resolver/DEBIAN/control
-          echo "Architecture: all" >> ipdomain-resolver/DEBIAN/control
-          echo "Maintainer: MikeDev0ps <https://github.com/MikeDev0ps>" >> ipdomain-resolver/DEBIAN/control
-          echo "Description: A script that processes IP addresses and performs DNS lookups." >> ipdomain-resolver/DEBIAN/control
+        mkdir -p ipdomain-resolver/DEBIAN
+        echo "Package: ipdomain-resolver" > ipdomain-resolver/DEBIAN/control
+        echo "Version: 1.0" >> ipdomain-resolver/DEBIAN/control
+        echo "Section: utils" >> ipdomain-resolver/DEBIAN/control
+        echo "Priority: optional" >> ipdomain-resolver/DEBIAN/control
+        echo "Architecture: all" >> ipdomain-resolver/DEBIAN/control
+        echo "Maintainer: MikeDev0ps <https://github.com/MikeDev0ps>" >> ipdomain-resolver/DEBIAN/control
+        echo "Description: A script that processes IP addresses and performs DNS lookups." >> ipdomain-resolver/DEBIAN/control
 
-          dpkg-deb --build ipdomain-resolver
+        dpkg-deb --build ipdomain-resolver
 
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        with:
-          tag_name: v1.0
-          release_name: Release v1.0
-          draft: false
-          prerelease: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload deb package to Release
-        uses: actions/upload-release-asset@v1
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ipdomain-resolver.deb
-          asset_name: ipdomain-resolver.deb
-          asset_content_type: application/vnd.debian.binary
-
-      - name: Upload script to Release
-        uses: actions/upload-release-asset@v1
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ipdomain-resolver.sh
-          asset_name: ipdomain-resolver.sh
-          asset_content_type: application/x-shellscript
+    - name: Upload files to Release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: v1.0  # Убедитесь, что тег соответствует тому, что вы создали вручную
+        release_name: Release v1.0
+        files: |
+          ipdomain-resolver.deb
+          ipdomain-resolver.sh  # Укажите путь к вашему скрипту
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Используем стандартный токен
