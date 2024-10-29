@@ -45,6 +45,6 @@ jobs:
         release_name: Release v1.0
         files: |
           ipdomain-resolver.deb
-          ipdomain-resolver.sh  # Укажите путь к вашему скрипту
+          ipdomain-resolver.sh
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Используем стандартный токен
