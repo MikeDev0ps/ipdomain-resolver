@@ -13,36 +13,36 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Set up environment
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y build-essential dh-make devscripts
+      - name: Set up environment
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential dh-make devscripts
 
-    - name: Create DEB package
-      run: |
-        mkdir -p ipdomain-resolver/usr/local/bin
-        cp ipdomain-resolver.sh ipdomain-resolver/usr/local/bin/ipdomain-resolver
-        chmod +x ipdomain-resolver/usr/local/bin/ipdomain-resolver
+      - name: Create DEB package
+        run: |
+          mkdir -p ipdomain-resolver/usr/local/bin
+          cp ipdomain-resolver.sh ipdomain-resolver/usr/local/bin/ipdomain-resolver
+          chmod +x ipdomain-resolver/usr/local/bin/ipdomain-resolver
 
-        mkdir -p ipdomain-resolver/DEBIAN
-        echo "Package: ipdomain-resolver" > ipdomain-resolver/DEBIAN/control
-        echo "Version: 1.0" >> ipdomain-resolver/DEBIAN/control
-        echo "Section: utils" >> ipdomain-resolver/DEBIAN/control
-        echo "Priority: optional" >> ipdomain-resolver/DEBIAN/control
-        echo "Architecture: all" >> ipdomain-resolver/DEBIAN/control
-        echo "Maintainer: MikeDev0ps <https://github.com/MikeDev0ps>" >> ipdomain-resolver/DEBIAN/control
-        echo "Description: A script that processes IP addresses and performs DNS lookups." >> ipdomain-resolver/DEBIAN/control
+          mkdir -p ipdomain-resolver/DEBIAN
+          echo "Package: ipdomain-resolver" > ipdomain-resolver/DEBIAN/control
+          echo "Version: 1.0" >> ipdomain-resolver/DEBIAN/control
+          echo "Section: utils" >> ipdomain-resolver/DEBIAN/control
+          echo "Priority: optional" >> ipdomain-resolver/DEBIAN/control
+          echo "Architecture: all" >> ipdomain-resolver/DEBIAN/control
+          echo "Maintainer: MikeDev0ps <https://github.com/MikeDev0ps>" >> ipdomain-resolver/DEBIAN/control
+          echo "Description: A script that processes IP addresses and performs DNS lookups." >> ipdomain-resolver/DEBIAN/control
 
-        dpkg-deb --build ipdomain-resolver
+          dpkg-deb --build ipdomain-resolver
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: ipdomain-resolver
-          path: *.deb  # Укажите путь к вашему .deb файлу
+          path: ipdomain-resolver.deb  # Укажите путь к вашему .deb файлу
 
       - name: Upload script
         uses: actions/upload-artifact@v4
